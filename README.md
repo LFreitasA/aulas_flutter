@@ -1,2 +1,3 @@
 # aulas_flutter
-Conteúdo estudado em flutter
+
+Conteúdo estudado em flutter.
