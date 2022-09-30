@@ -1,4 +1,6 @@
-import 'classCaixa.dart';
+import 'classes/classCaixa.dart';
+import 'classes/classGerente.dart';
+import 'classes/classVendedor.dart';
 
 void main() {
   Caixa caixa1 = Caixa("1579", "Ana", "Oliveira", 1212, 230);
