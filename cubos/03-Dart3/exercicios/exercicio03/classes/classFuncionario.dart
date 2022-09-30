@@ -21,7 +21,7 @@ abstract class Funcionarios {
   apresentarDados(salario, horasTralhadas) {
     num salarioComExtra = calcularHoraExtra(horasTrabalhadas, salario);
     print("Matrícula: $matricula");
-    print("Nome: $nome");
+    print("Nome: $nome $sobrenome");
     print("Horas trabalhadas no mês: $horasTrabalhadas");
     print("Salário: ${salarioComExtra.toStringAsFixed(2)}");
   }
