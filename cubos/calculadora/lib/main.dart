@@ -1,113 +1,231 @@
+import 'package:calculadora/theme.dart';
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const App());
+import 'display.dart';
+import 'numberButton.dart';
+import 'OperadorButton.dart';
+
+const appName = "Calculador Simples";
+void main() => runApp(const App());
+
+class App extends StatefulWidget {
+  const App({super.key});
+
+  @override
+  State<App> createState() => _AppState();
 }
 
-class App extends StatelessWidget {
-  const App({super.key});
+class _AppState extends State<App> {
+  ThemeMode currentThemeMode = ThemeMode.light;
+  void toggleThemeMode() {
+    setState(() {
+      currentThemeMode = currentThemeMode == ThemeMode.light
+          ? ThemeMode.dark
+          : ThemeMode.light;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Container(color: Colors.grey, child: SafeArea(child: MeuCard())),
-    );
+        title: "Calculadora simples",
+        debugShowCheckedModeBanner: false,
+        //debugShowMaterialGrid: true, coloca quadriculado na tela para ver alinhamento
+        themeMode: currentThemeMode, //muda o thema para claro ou escuros
+        theme: SimpleCalculatorTheme.light,
+        darkTheme: SimpleCalculatorTheme.dark,
+        home: SimpleCalculator(
+          onThemeModePressed: toggleThemeMode,
+        ));
   }
 }
 
-class MeuCard extends StatelessWidget {
-  MeuCard({super.key});
-  final nome = "Leonardo Freitas";
-  double preco = 0.041;
+class SimpleCalculator extends StatefulWidget {
+  const SimpleCalculator({super.key, required this.onThemeModePressed});
+
+  final VoidCallback onThemeModePressed;
+
+  @override
+  State<SimpleCalculator> createState() => _SimpleCalculatorState();
+}
+
+class _SimpleCalculatorState extends State<SimpleCalculator> {
+  static const operadores = ["*", "-", "+"];
+
+  String display = '0';
+  String firstNumber = '';
+  String secondNumber = '';
+  String operador = '';
+  double progress = 0;
+
+  void insert(String char) {
+    if (char == '0') {
+      if (operador.isEmpty && firstNumber.isEmpty) return;
+      if (operador.isNotEmpty && secondNumber.isEmpty) return;
+    }
+    if (operadores.contains(char)) {
+      if (firstNumber.isEmpty) {
+        firstNumber = "0";
+      }
+      operador = char;
+    } else {
+      if (operador.isEmpty) {
+        firstNumber += char;
+      } else {
+        secondNumber += char;
+      }
+    }
+
+    setState(() {
+      if (operador.isEmpty) {
+        display = firstNumber;
+        progress = 0.33;
+      } else {
+        if (secondNumber.isEmpty) {
+          display = "$firstNumber $operador ";
+          progress = 0.66;
+        } else {
+          display = "$firstNumber $operador $secondNumber";
+          progress = 1;
+          disableOperadorButton = true;
+        }
+      }
+    });
+  }
+
+  bool disableOperadorButton = false;
+
+  void clear() {
+    setState(() {
+      firstNumber = '';
+      secondNumber = '';
+      operador = '';
+      display = "0";
+      progress = 0;
+      disableOperadorButton = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-        backgroundColor: Colors.grey,
-        body: Container(
-          height: 400,
-          width: 300,
-          child: Card(
-              color: Color.fromARGB(255, 3, 36, 63),
+      appBar: AppBar(
+        title: const Text(appName),
+        actions: [
+          IconButton(
+              onPressed: widget.onThemeModePressed,
+              icon: Icon(theme.brightness == Brightness.light
+                  ? Icons.dark_mode
+                  : Icons.light_mode))
+        ],
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(top: 70),
+        child: FloatingActionButton(
+          onPressed: clear,
+          child: const Text("C"),
+        ),
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(flex: 3, child: Display(display: display)),
+          Center(
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Image.network(
-                        'https://camo.githubusercontent.com/dc30ec513e394f4863cdd26fcf702fb5519280a1f2ed33736771477e64d005dc/68747470733a2f2f692e696d6775722e636f6d2f773339717a61712e706e67'),
-                    const Padding(
-                      padding: EdgeInsets.only(top: 8.0, bottom: 8),
-                      child: Text(
-                        "Equilibrium#3429",
-                        style: TextStyle(
-                            color: Color.fromARGB(255, 122, 203, 240),
-                            fontWeight: FontWeight.w600),
-                      ),
-                    ),
-                    const Text(
-                      "Nossa colecao equilibrium promove calma e balanco",
-                      style: TextStyle(color: Colors.grey, fontSize: 10),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "$preco ETH",
-                          style: const TextStyle(
-                            color: Color.fromARGB(255, 122, 203, 240),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: const [
-                              Icon(
-                                Icons.av_timer_sharp,
-                                color: Colors.lightBlueAccent,
-                              ),
-                              Text(
-                                "Restam 3 dias",
-                                style: TextStyle(
-                                  color: Colors.lightBlueAccent,
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    const Divider(
-                      color: Colors.grey,
-                    ),
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 50,
-                          height: 50,
-                          child: ClipRRect(
-                            child: Image.network(
-                                'https://media-exp1.licdn.com/dms/image/C4D03AQHfcaPMS_EgSg/profile-displayphoto-shrink_800_800/0/1616904723047?e=1672272000&v=beta&t=Q9ZVjAzPOii0MNk3vnSNg6aQveP91NA1sAcQfb3_QaA'),
-                            borderRadius: BorderRadius.all(Radius.circular(30)),
-                          ),
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.only(left: 8.0),
-                          child: Text(
-                            "Criado por ",
-                            style: TextStyle(color: Colors.grey, fontSize: 8),
-                          ),
-                        ),
-                        Text(
-                          nome,
-                          style:
-                              const TextStyle(color: Colors.white, fontSize: 8),
-                        )
-                      ],
-                    )
-                  ],
+            padding: const EdgeInsets.all(8.0),
+            child: LinearProgressIndicator(value: progress),
+          )),
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                NumberButton(number: '7', onNumberPressed: insert),
+                NumberButton(number: '8', onNumberPressed: insert),
+                NumberButton(number: '9', onNumberPressed: insert),
+                OperadorButton(
+                  operador: "*",
+                  onOperadorPressed: insert,
+                  disabled: disableOperadorButton,
                 ),
-              )),
-        ));
+              ],
+            ),
+          ),
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                NumberButton(number: '4', onNumberPressed: insert),
+                NumberButton(number: '5', onNumberPressed: insert),
+                NumberButton(number: '6', onNumberPressed: insert),
+                OperadorButton(
+                  operador: "-",
+                  onOperadorPressed: insert,
+                  disabled: disableOperadorButton,
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                NumberButton(number: '1', onNumberPressed: insert),
+                NumberButton(number: '2', onNumberPressed: insert),
+                NumberButton(number: '3', onNumberPressed: insert),
+                OperadorButton(
+                    operador: "+",
+                    onOperadorPressed: insert,
+                    disabled: disableOperadorButton),
+              ],
+            ),
+          ),
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                    flex: 3,
+                    child: TextButton(
+                      onPressed: () => insert("0"),
+                      child: const Text("0"),
+                    )),
+                Expanded(
+                    child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: OutlinedButton(
+                    onPressed: calculate,
+                    child: const Text("="),
+                  ),
+                ))
+              ],
+            ),
+          ),
+        ],
+      ),
+      bottomNavigationBar: Container(
+        height: 50,
+        color: Colors.blue,
+      ),
+    );
+  }
+
+  void calculate() {
+    final number1 = int.parse(firstNumber);
+    final number2 = int.parse(secondNumber);
+    final resultado = operador == "-"
+        ? number1 - number2
+        : operador == '*'
+            ? number1 * number2
+            : number1 + number2;
+    secondNumber = '';
+    operador = '';
+    firstNumber = resultado.toString();
+    setState(() {
+      display = resultado.toString();
+      progress = 0.33;
+      disableOperadorButton = false;
+    });
   }
 }
