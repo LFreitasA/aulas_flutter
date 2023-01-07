@@ -18,6 +18,7 @@ class Strings {
   static const String multiplicacao = "*";
   static const String subtracao = "-";
   static const String soma = "+";
+  static const String modulo = "MD";
   static const String igual = "=";
   static const String ponto = ".";
 }
