@@ -3,8 +3,12 @@ import 'package:megacine/pages/home_page.dart';
 
 import 'classes/Strings.dart';
 import 'classes/app_colors.dart';
+import 'classes/movies.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  // ignore: await_only_futures
+  runApp(MyApp());
+}
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -28,6 +32,8 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
           appBar: AppBar(
+            shadowColor: Colors.orange,
+            foregroundColor: Colors.blue,
             title: Text(
               Strings.title,
               style: TextStyle(
