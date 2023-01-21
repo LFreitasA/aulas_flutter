@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:megacine/pages/home_page.dart';
+import 'package:megacine/classes/strings.dart';
+import 'package:megacine/pages/view_popular.dart';
 
-import 'classes/Strings.dart';
 import 'classes/app_colors.dart';
-import 'classes/movies.dart';
+import 'pages/view_top_rated.dart';
 
 void main() async {
   // ignore: await_only_futures
@@ -12,20 +12,19 @@ void main() async {
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+  MyApp({Key? key}) : super(key: key);
 
   @override
   State<MyApp> createState() => _MyAppState();
+  bool isDark = true;
 }
 
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    bool isDark = false;
-
     void onSwitch(value) {
       setState(() {
-        isDark = !isDark;
+        widget.isDark = !widget.isDark;
       });
     }
 
@@ -46,16 +45,49 @@ class _MyAppState extends State<MyApp> {
             actions: [
               Switch.adaptive(
                   activeColor: AppColorsDark.textColor,
-                  value: isDark,
+                  value: widget.isDark,
                   onChanged: ((value) {
+                    widget.isDark = !widget.isDark;
                     setState(() {
-                      value = !value;
+                      widget.isDark;
+                      value;
+                      print("isDark = $widget.isDark");
+                      print("value =$value");
                     });
                   }))
             ],
           ),
           backgroundColor: AppColorsDark.backGroundColor,
-          body: HomePage()),
+          body: DefaultTabController(
+            length: 2,
+            child: Column(
+              children: [
+                TabBar(
+                    labelColor: Colors.orange,
+                    unselectedLabelColor: Colors.grey,
+                    indicatorColor: Colors.black,
+                    tabs: [
+                      Tab(
+                        text: Strings.populars,
+                      ),
+                      Tab(
+                        text: Strings.mostRated,
+                      ),
+                    ]),
+                TabSelected(),
+              ],
+            ),
+          )),
     );
+  }
+}
+
+class TabSelected extends StatelessWidget {
+  const TabSelected({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+        child: TabBarView(children: [ViewPopular(), ViewTopRate()]));
   }
 }
