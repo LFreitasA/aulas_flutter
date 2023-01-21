@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:megacine/api_requests/api_request.dart';
 import 'package:megacine/classes/movies.dart';
 
@@ -33,21 +34,16 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Row(
-          children: [Text(Strings.title), Text("ola")],
-        ),
+        Row(),
         Expanded(
           child: Visibility(
             visible: isLoaded,
-            child: ListView.builder(
+            child: GridView.builder(
+              gridDelegate:
+                  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
               itemCount: popularMovies.length,
               itemBuilder: (context, index) {
-                return Column(
-                  children: [
-                    Image.network(popularMovies[index].image),
-                    Text(popularMovies[index].title),
-                  ],
-                );
+                return gridMovie(index);
               },
             ),
             replacement: const Center(
@@ -58,4 +54,41 @@ class _HomePageState extends State<HomePage> {
       ],
     );
   }
+
+  Column gridMovie(int index) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: Container(
+            width: 101,
+            height: 120,
+            color: index % 2 == 0 ? Colors.amber : Colors.red,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                    height: 85,
+                    child: Image.network(popularMovies[index].image)),
+                Text(popularMovies[index].title)
+              ],
+            ),
+          ),
+        )
+      ],
+    );
+  }
 }
+ /*          Text(
+            popularMovies[index].title,
+            style: TextStyle(color: Colors.white),
+          ),
+          */
+
+          /*
+          Expanded(
+          child: Image.network(
+            popularMovies[index].image,
+          ),
+        ),
+        */

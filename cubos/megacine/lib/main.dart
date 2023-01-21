@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:megacine/pages/home_page.dart';
 
 import 'classes/Strings.dart';
@@ -32,8 +33,8 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
           appBar: AppBar(
-            shadowColor: Colors.orange,
-            foregroundColor: Colors.blue,
+            systemOverlayStyle:
+                SystemUiOverlayStyle(statusBarColor: AppColorsDark.textColor),
             title: Text(
               Strings.title,
               style: TextStyle(

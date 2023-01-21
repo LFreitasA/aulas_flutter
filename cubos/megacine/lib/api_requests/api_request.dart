@@ -39,5 +39,5 @@ Future<int> getPopularMovies() async {
 }
 
 void main() async {
-  final movies1 = await getPopularMovies();
+  await getPopularMovies();
 }
