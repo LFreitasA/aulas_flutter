@@ -4,7 +4,8 @@ import 'package:provider/provider.dart';
 import 'view/pages/products_page.dart';
 import 'viewmodel/products_view_model.dart';
 
-void main() {
+void main() async {
+  Firebase.init
   runApp(MyApp());
 }
 
