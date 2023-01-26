@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => ProductsViewModel(),
       child: MaterialApp(
-        title: 'State Management Demo',
+        title: 'State Management Demos',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           accentColor: Colors.blueGrey[100],
