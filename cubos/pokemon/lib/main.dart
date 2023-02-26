@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:pokemon/app/data/repository/repository.dart';
 import 'package:pokemon/home_page.dart';
+import 'package:provider/provider.dart';
 
-void main() => runApp(MyApp());
+void main() =>
+    runApp(Provider(create: (context) => Pokemons(), child: const MyApp()));
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -13,9 +16,11 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
+    int number = 428;
     return MaterialApp(
+      theme: ThemeData(useMaterial3: true),
       debugShowCheckedModeBanner: false,
-      home: Scaffold(backgroundColor: Colors.grey, body: HomePage()),
+      home: HomePage(number: number),
     );
   }
 }
