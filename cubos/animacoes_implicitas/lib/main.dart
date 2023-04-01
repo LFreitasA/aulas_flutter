@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:animacoes_implicitas/animacoes_implicitas_container.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -11,11 +14,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Biblioteca de animações',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Animações'),
+      home: MyHomePage(title: "title"),
     );
   }
 }
@@ -30,9 +34,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  double altura = 100;
-  double largura = 100;
-  bool boleano = false;
+  bool isNormal = true;
   Color cor = Colors.red;
   @override
   Widget build(BuildContext context) {
@@ -40,10 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           setState(() {
-            boleano = !boleano;
-            cor = boleano ? Colors.green : Colors.red;
-            altura = boleano ? 225 : 100;
-            largura = boleano ? 225 : 100;
+            isNormal = !isNormal;
           });
         },
         child: Text("Animar"),
@@ -51,28 +50,43 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-          child: GestureDetector(
-        onTap: () {
-          setState(() {
-            boleano = !boleano;
-            cor = boleano
-                ? Color.fromARGB(255, 7, 142, 220)
-                : Color.fromARGB(255, 132, 8, 93);
-            altura = boleano ? 225 : 100;
-            largura = boleano ? 225 : 100;
-          });
-        },
-        child: AnimatedContainer(
-          height: altura,
-          width: largura,
-          decoration: BoxDecoration(
-              color: cor,
-              borderRadius: boleano ? BorderRadius.circular(500) : null),
-          duration: Duration(seconds: 5),
-          curve: Curves.bounceIn,
-        ),
-      )),
+      body: Column(
+        children: [
+          TextAnimation(isNormal: isNormal),
+          TweenAnimationBuilder(
+            curve: Curves.linear,
+            tween: Tween<double>(begin: 1, end: 12),
+            // tween: ColorTween(begin: Colors.blue, end: Colors.red),
+            duration: Duration(seconds: 100),
+            builder: (context, double rotation, child) {
+              return Transform.rotate(
+                angle: -pi / rotation,
+                child: child,
+              );
+            },
+            child: Container(
+              color: Colors.blue,
+              height: 100,
+              width: 100,
+            ),
+          ),
+          SizedBox(
+            height: 50,
+          ),
+          TweenAnimationBuilder(
+            curve: Curves.linear,
+            tween: ColorTween(begin: Colors.blue, end: Colors.red),
+            duration: Duration(seconds: 10),
+            builder: (context, Color? color, child) {
+              return Container(
+                color: color,
+                height: 100,
+                width: 100,
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 }
