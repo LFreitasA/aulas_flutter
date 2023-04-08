@@ -13,6 +13,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  TextEditingController editingNumber = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final dados = context.read<Pokemons>();
@@ -63,16 +64,53 @@ class _HomePageState extends State<HomePage> {
             backgroundColor:
                 bgColor(pokemon.tipos[0]['type']['name'].toString()),
           ),
-          body: Column(
-            children: [
-              Center(child: SvgPicture.network(pokemon.imageDefault)),
-              //Image.network(pokemon.imageShiny),
-              for (dynamic tipo in pokemon.tipos)
-                Text(
-                  tipo['type']['name'],
-                  style: TextStyle(color: Colors.white),
-                )
-            ],
+          body: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: editingNumber,
+                        keyboardType: TextInputType.numberWithOptions(
+                            decimal: false, signed: false),
+                        decoration: InputDecoration(
+                            labelText: "insira o número do Pokemon"),
+                      ),
+                    ),
+                    TextButton(
+                        onPressed: () {
+                          print(editingNumber.text);
+                          print(editingNumber.text);
+                          print(int.tryParse(editingNumber.text));
+                          if (int.tryParse(editingNumber.text) != null) {
+                            widget.number = int.tryParse(editingNumber.text)!;
+                            setState(() {
+                              widget.number;
+                              editingNumber.clear();
+                            });
+                          }
+                          // int numero = int.parse(editingNumber.text);
+                        },
+                        child: Text(
+                          "Ir",
+                          style: TextStyle(color: Colors.white),
+                        ))
+                  ],
+                ),
+                Expanded(
+                    child: Center(
+                        child: SvgPicture.network(pokemon.imageDefault))),
+                //Image.network(pokemon.imageShiny),
+                for (dynamic tipo in pokemon.tipos)
+                  Text(
+                    tipo['type']['name'],
+                    style: TextStyle(color: Colors.white),
+                  )
+              ],
+            ),
           ),
         );
       },
