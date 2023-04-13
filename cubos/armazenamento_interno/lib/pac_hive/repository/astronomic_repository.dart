@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
-import 'package:armazenamento_interno/repository/star_model.dart';
+import 'package:armazenamento_interno/pac_hive/repository/star_model.dart';
 
 class StarRepository {
   Future<List<StarModel>> getPlanets() async {
@@ -16,6 +16,7 @@ class StarRepository {
           .catchError((e) {
         return http.Response('body', 500);
       });
+      print(response.statusCode);
       if (response.statusCode == 200) {
         mapList = List<Map<String, dynamic>>.from(jsonDecode(response.body));
         print("Com Internet");

@@ -1,65 +1,61 @@
-import 'package:armazenamento_interno/repository/astronomic_repository.dart';
-import 'package:armazenamento_interno/repository/star_model.dart';
+import 'package:armazenamento_interno/repository/astronomic_picture.dart';
+import 'package:armazenamento_interno/repository/picture.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  final dir = await getApplicationDocumentsDirectory();
-  Hive.init(dir.path);
-  runApp(MyApp());
+void main() {
+  runApp(Provider(create: (context) => PictureDay(), child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+      home: Scaffold(
+        appBar: AppBar(),
+        body: ImageDoDia(),
       ),
-      home: MyHomePage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  final repository = StarRepository();
+class ImageDoDia extends StatelessWidget {
+  const ImageDoDia({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: Center(
-        child: FutureBuilder<List<StarModel>>(
-            future: repository.getPlanets(),
-            builder: (context, snapshot) {
-              switch (snapshot.connectionState) {
-                case ConnectionState.waiting:
-                  return const Center(child: CircularProgressIndicator());
-                default:
-                  var _astronomics = snapshot.data ?? <StarModel>[];
-                  return Column(
-                    children: _astronomics.map((model) {
-                      return ListTile(
-                          title: Text(model.title),
-                          leading: SizedBox(
-                              height: 50,
-                              width: 50,
-                              child: Image.network(model.hdurl)));
-                    }).toList(),
-                  );
-              }
-            }),
-      ),
+    final resposta = context.read<PictureDay>();
+    return FutureBuilder<Picture>(
+      future: resposta.dioRequest(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final dados = snapshot.data!;
+          print("snapshot");
+          print(snapshot.data!.date);
+          return Column(
+            children: [
+              Text(dados.date),
+              Container(
+                height: 500,
+                width: 500,
+                child: Image.network(dados.url),
+              ),
+              Text(dados.title),
+              ElevatedButton.icon(
+                onPressed: null,
+                icon: Icon(Icons.abc),
+                label: Text("Baixar imagem"),
+              )
+            ],
+          );
+        } else {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
     );
   }
 }
